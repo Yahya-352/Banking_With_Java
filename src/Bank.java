@@ -39,7 +39,7 @@ public class Bank {
             throw new IllegalArgumentException("username already exists!");
         }
         if(!wantsChecking && !wantsSaving){
-            throw new IllegalArgumentException("Customer must have atleast one account");
+            throw new IllegalArgumentException("Customer must have at least one account");
         }
 
         Customer newCustomer = new Customer(username,password);

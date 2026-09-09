@@ -13,7 +13,7 @@ public class Main {
         try {
             bank.login("alice", "wrongpass");
         } catch (IllegalArgumentException e) {
-            System.out.println("Correctly rejected bad password: " + e.getMessage());
+            System.out.println("rejected bad password: " + e.getMessage());
         }
     }
 }
