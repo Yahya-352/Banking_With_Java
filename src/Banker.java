@@ -6,7 +6,7 @@ public class Banker extends User{
 
     @Override
     public String getRole() {
-        return "Banker";
+        return "BANKER";
     }
 
 }

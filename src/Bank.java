@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -5,9 +6,11 @@ import java.util.Optional;
 public class Bank {
 
     private List<User> users;
+    FileHandler fileHandler;
 
-    public Bank(){
-        users = new ArrayList<>();
+    public Bank() throws IOException {
+        fileHandler = new FileHandler();
+        users = fileHandler.userListLoading();
     }
 
     public User login(String username , String password){
@@ -50,6 +53,7 @@ public class Bank {
         }
 
         users.add(newCustomer);
+        fileHandler.saveUsers(users);
         return newCustomer;
     }
 }

@@ -15,6 +15,10 @@ public abstract class User {
         return password.equals(inputPass);
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public String getUsername() {
         return username;
     }

@@ -8,4 +8,5 @@ public class SavingsAccount extends Account{
     public String getAccountType() {
         return "SAVINGS ACCOUNT";
     }
+
 }
