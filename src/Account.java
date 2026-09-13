@@ -7,9 +7,8 @@ public abstract class Account implements Transactable{
 
     public Account(String accountNumber , double balance){
         this.accountNumber = accountNumber;
-        this.balance = 0.0;
+        this.balance = balance;
         isActive = true;
-        overDraftCount++;
     }
 
     public void withDraw(double amount){
@@ -55,6 +54,11 @@ public abstract class Account implements Transactable{
     public void transfer(Account targetAccount , double amount){
 
     }
+
+    public int getOverDraftCount() {
+        return overDraftCount;
+    }
+
 
     public void setActive(boolean active) {
         isActive = active;

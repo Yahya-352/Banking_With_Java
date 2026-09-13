@@ -6,7 +6,7 @@ public class SavingsAccount extends Account{
 
     @Override
     public String getAccountType() {
-        return "SAVINGS ACCOUNT";
+        return "SAVINGS_ACCOUNT";
     }
 
 }

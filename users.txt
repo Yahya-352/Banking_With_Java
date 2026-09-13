@@ -1,1 +1,3 @@
 alice|alice123|CUSTOMER
+bob2|bob123|CUSTOMER
+bob|bob123|CUSTOMER
