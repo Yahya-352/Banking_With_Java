@@ -62,7 +62,17 @@ public class FileHandler {
                 String pass = users.get(i).getPassword();
                 String role = users.get(i).getRole();
 
-                myWriter.write(username + "|" + pass + "|" + role + "\n");
+                String checkingAcc = "";
+                String savingsAcc = "";
+                User user = users.get(i);
+                if(role.equals("CUSTOMER")){
+                    Customer customer = (Customer) user;
+                    checkingAcc = customer.getCheckingAccount().getAccountNumber();
+                    savingsAcc = customer.getSavingsAccount().getAccountNumber();
+                }
+
+                myWriter.write(username + "|" + pass + "|" + role + "|" + checkingAcc
+                        + "|"+ savingsAcc +"\n");
             }
             myWriter.close();
         } catch (IOException e) {

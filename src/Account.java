@@ -4,6 +4,8 @@ public abstract class Account implements Transactable{
     private boolean isActive;
     private int overDraftCount = 0;
 
+    private String customerId;
+
 
     public Account(String accountNumber , double balance){
         this.accountNumber = accountNumber;
@@ -62,6 +64,9 @@ public abstract class Account implements Transactable{
         return overDraftCount;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
 
     public void setActive(boolean active) {
         isActive = active;
@@ -80,4 +85,10 @@ public abstract class Account implements Transactable{
     }
 
     public abstract String getAccountType();
+
+    @Override
+    public String toString() {
+        return accountNumber + " | " + getAccountType() + " | Balance: $" + balance + " | Active: " + isActive;
+    }
+
 }

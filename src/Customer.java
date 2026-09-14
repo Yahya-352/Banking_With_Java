@@ -4,7 +4,7 @@ public class Customer extends User{
     private SavingsAccount savingsAccount;
 
     public Customer(String username, String password) {
-        super(username, password);
+        super( username, password);
     }
 
     public void setCheckingAccount(CheckingAccount checkingAccount) {
