@@ -36,4 +36,9 @@ public class Transaction {
         return timestamp;
     }
 
+    @Override
+    public String toString() {
+        return timestamp + " | " + type + " | $" + amount + " | Balance after: $" + balanceAfter;
+    }
+
 }

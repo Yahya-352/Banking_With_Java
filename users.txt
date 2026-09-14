@@ -1,3 +1,5 @@
 alice|alice123|CUSTOMER
 bob2|bob123|CUSTOMER
 bob|bob123|CUSTOMER
+yahya|yahya123|CUSTOMER
+yahya1|yahya123|CUSTOMER

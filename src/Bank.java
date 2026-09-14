@@ -53,7 +53,7 @@ public class Bank {
 
         Customer newCustomer = new Customer(username,password);
         if(wantsChecking){
-            CheckingAccount checkingAccount = new CheckingAccount("" , 0);
+            CheckingAccount checkingAccount = new CheckingAccount(Account.generateAccountNumber() , 0);
             newCustomer.setCheckingAccount(checkingAccount);
             accounts.add(checkingAccount);
         }
@@ -96,5 +96,11 @@ public class Bank {
 
         fileHandler.appendingTransactions(transaction);
         fileHandler.saveAccounts(accounts);
+    }
+
+    public List<Transaction> getTransactionHistory(Account account){
+        List<Transaction> transactions = fileHandler.transactionsListLoading();
+        return transactions.stream().filter(a -> a.getAccountNumber()
+                .equals(account.getAccountNumber())).toList();
     }
 }

@@ -50,6 +50,9 @@ public abstract class Account implements Transactable{
         }
 
     }
+    public static String generateAccountNumber() {
+        return "ACC" + System.currentTimeMillis();
+    }
 
     public void transfer(Account targetAccount , double amount){
 
