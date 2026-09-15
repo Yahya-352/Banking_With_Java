@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -173,22 +175,15 @@ public class Main {
         System.out.println("3. Back");
         System.out.println("Enter the account type you want to view your transaction history for:");
         int acctype = sc.nextInt();
-        boolean running = true;
         if(acctype == 1){
             if(customer.getCheckingAccount() != null){
-                List<Transaction> transactions = bank.getTransactionHistory(customer.getCheckingAccount());
-                for(int i = 0 ; i < transactions.size() ; i++){
-                    System.out.println(transactions.get(i));
-                }
-                }else{
-                    System.out.println("you dont have a checking account!");
-                }
+                showFilteredHistory(customer.getCheckingAccount());
+            }else{
+                System.out.println("you dont have a checking account!");
+            }
             }else if (acctype == 2){
                 if(customer.getSavingsAccount() != null){
-                    List<Transaction> transactions = bank.getTransactionHistory(customer.getSavingsAccount());
-                    for(int i = 0 ; i < transactions.size() ; i++){
-                        System.out.println(transactions.get(i));
-                    }
+                    showFilteredHistory(customer.getSavingsAccount());
                 }else{
                     System.out.println("you dont have a savings account!");
                 }
@@ -196,6 +191,51 @@ public class Main {
                 customerMenuPage();
             }
         customerMenuPage();
+    }
+    private static void showFilteredHistory(Account account){
+        List<Transaction> allTransactions = bank.getTransactionHistory(account);
+        System.out.println("1. All");
+        System.out.println("2. Today");
+        System.out.println("3. Yesterday");
+        System.out.println("4. Last 7 Days");
+        System.out.println("5. Last 30 Days");
+        System.out.println("6. Filter by month number");
+        System.out.println("7. Choose start Date and End date");
+        System.out.println("Choose a filter:");
+        int chosenFilter = sc.nextInt();
+        List<Transaction> filteredTransactions;
+        if(chosenFilter == 1){
+            filteredTransactions = allTransactions;
+        }else if(chosenFilter == 2){
+            filteredTransactions = bank.getTransactionsForToday(allTransactions);
+        }else if(chosenFilter == 3){
+            filteredTransactions = bank.getTransactionsForYesterday(allTransactions);
+        }else if(chosenFilter == 4){
+            filteredTransactions = bank.getTransactionsForLast7Days(allTransactions);
+        }else if(chosenFilter == 5){
+            filteredTransactions = bank.getTransactionsForLast30Days(allTransactions);
+        }else if(chosenFilter == 6){
+            System.out.println("Enter month number");
+            int month = sc.nextInt();
+            filteredTransactions = bank.getTransactionsByMonth(allTransactions,month);
+        }else if(chosenFilter == 7){
+            try{
+                System.out.println("Enter Start Date");
+                LocalDate startDate = LocalDate.parse(sc.next());
+                System.out.println("Enter End Date");
+                LocalDate endDate = LocalDate.parse(sc.next());
+                filteredTransactions = bank.getTransactionsForCustomDates(allTransactions ,startDate , endDate );
+            }catch (Exception e){
+                System.out.println("Invalid date format .. printing all transactions");
+                filteredTransactions = allTransactions;
+            }
+        }
+        else{
+            filteredTransactions = allTransactions;
+        }
+        for(int i = 0 ; i < filteredTransactions.size() ; i++){
+            System.out.println(filteredTransactions.get(i));
+        }
     }
     private static void accountStatement(){
         System.out.println("1. Checking Account");
@@ -213,6 +253,7 @@ public class Main {
         for(Account account : accounts){
             System.out.println(account);
         }
+        customerMenuPage();
     }
 
     private static void bankerPage(){

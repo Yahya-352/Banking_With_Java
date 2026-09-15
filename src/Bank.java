@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,12 +102,6 @@ public class Bank {
         fileHandler.saveAccounts(accounts);
     }
 
-    public List<Transaction> getTransactionHistory(Account account){
-        List<Transaction> transactions = fileHandler.transactionsListLoading();
-        return transactions.stream().filter(a -> a.getAccountNumber()
-                .equals(account.getAccountNumber())).toList();
-    }
-
     private void reconnectAccountsAfterReload(){
         for(int i = 0 ; i < users.size() ; i++){
             User user = users.get(i);
@@ -123,5 +118,46 @@ public class Bank {
                 }
             }
         }
+    }
+
+    public List<Transaction> getTransactionHistory(Account account){
+        List<Transaction> transactions = fileHandler.transactionsListLoading();
+        return transactions.stream().filter(a -> a.getAccountNumber()
+                .equals(account.getAccountNumber())).toList();
+    }
+
+
+    //transaction filtering methods..
+
+    public List<Transaction> getTransactionsForToday(List<Transaction> transactions){
+        return transactions.stream()
+                .filter(t -> t.getTimestamp().toLocalDate().equals(LocalDate.now()))
+                .toList();
+    }
+
+    public List<Transaction> getTransactionsForYesterday(List<Transaction> transactions){
+        return transactions.stream()
+                .filter(t -> t.getTimestamp().toLocalDate().equals(LocalDate.now().minusDays(1)))
+                .toList();
+    }
+
+    public List<Transaction> getTransactionsForLast7Days(List<Transaction> transactions){
+        return transactions.stream().filter(t -> t.getTimestamp()
+                .isAfter(LocalDateTime.now().minusDays(7))).toList();
+    }
+    public List<Transaction> getTransactionsForLast30Days(List<Transaction> transactions){
+        return transactions.stream().filter(t -> t.getTimestamp()
+                .isAfter(LocalDateTime.now().minusDays(30))).toList();
+    }
+
+    public List<Transaction> getTransactionsByMonth(List<Transaction> transactions , int month){
+        return transactions.stream().filter(t ->
+                t.getTimestamp().getMonthValue() == month).toList();
+    }
+
+    public List<Transaction> getTransactionsForCustomDates(List<Transaction> transactions ,
+                                                         LocalDate startDate , LocalDate endDate){
+        return transactions.stream().filter(t -> t.getTimestamp().toLocalDate().isAfter(startDate)&&
+                t.getTimestamp().toLocalDate().isBefore(endDate)).toList();
     }
 }
