@@ -281,6 +281,49 @@ public class Main {
     private static void accountStatement(){
         System.out.println("1. Checking Account");
         System.out.println("2. Savings Account");
+        System.out.println("3. Back");
+        boolean running = true;
+        while (running){
+            System.out.println("please enter a number to choose the account you want to View:");
+            int accType = sc.nextInt();
+            if(accType == 1){
+                Account acc = null;
+                if(customer.getCheckingAccount() != null){
+                    System.out.println("-------------ACCOUNT STATEMENT-----------");
+                    acc = customer.getCheckingAccount();
+                    List<Transaction> transactions = bank.getTransactionHistory(acc);
+                    System.out.println(acc);
+                    System.out.println("-------------ACCOUNT TRANSACTIONS-----------");
+                    for(Transaction transaction : transactions){
+                        System.out.println(transaction);
+                    }
+
+                }else{
+                    System.out.println("you dont have a checking account");
+                }
+                running = false;
+            }else if(accType ==2){
+                Account acc = null;
+                if(customer.getSavingsAccount() != null){
+                    System.out.println("-------------ACCOUNT STATEMENT-----------");
+                    acc = customer.getSavingsAccount();
+                    List<Transaction> transactions = bank.getTransactionHistory(acc);
+                    System.out.println(acc);
+                    System.out.println("-------------ACCOUNT TRANSACTIONS-----------");
+                    for(Transaction transaction : transactions){
+                        System.out.println(transaction);
+                    }
+                }else{
+                    System.out.println("you dont have a saving account");
+                }
+                running = false;
+            }else if (accType == 3){
+                running = false;
+            }else{
+                System.out.println("please enter a valid option:");
+            }
+        }
+        customerMenuPage();
     }
 
     private static void viewAccounts(Customer customer){
@@ -296,6 +339,7 @@ public class Main {
         }
         customerMenuPage();
     }
+
 
     private static void bankerPage(){
 
