@@ -102,14 +102,41 @@ public class Bank {
         fileHandler.saveAccounts(accounts);
     }
 
+    public void transfer(Account fromAcc , String toAccNumber, double amount){
+        Account toAccount = null;
+        if (fromAcc.getAccountNumber().equals(toAccNumber)) {
+            throw new IllegalArgumentException("Cannot transfer to the same account");
+        }
+        for(int i = 0 ; i< accounts.size() ; i++){
+            if(accounts.get(i).getAccountNumber().equals(toAccNumber)){
+                toAccount = accounts.get(i);
+            }
+        }
+        if(toAccount != null){
+            fromAcc.withDraw(amount);
+            toAccount.deposit(amount);
+            Transaction outTransaction = new Transaction(
+                    fromAcc.getAccountNumber(), "TRANSFER_OUT", amount, fromAcc.getBalance(), LocalDateTime.now());
+            Transaction inTransaction = new Transaction(
+                    toAccount.getAccountNumber(), "TRANSFER_IN", amount, toAccount.getBalance(), LocalDateTime.now());
+
+            fileHandler.appendingTransactions(outTransaction);
+            fileHandler.appendingTransactions(inTransaction);
+            fileHandler.saveAccounts(accounts);
+        }else{
+            throw new IllegalArgumentException("No account found with that number: " + toAccNumber);
+        }
+
+    }
+
     private void reconnectAccountsAfterReload(){
         for(int i = 0 ; i < users.size() ; i++){
             User user = users.get(i);
             if(user.getRole().equals("CUSTOMER")){
                 Customer customer = (Customer) user;
                 for(int j = 0; j < accounts.size() ; j++){
-                    if(customer.getUserId().equals(accounts.get(i).getCustomerId())){
-                        if(accounts.get(i).getAccountType().equals("CHECKING_ACCOUNT")){
+                    if(customer.getUserId().equals(accounts.get(j).getCustomerId())){
+                        if(accounts.get(j).getAccountType().equals("CHECKING_ACCOUNT")){
                             customer.setCheckingAccount((CheckingAccount) accounts.get(j));
                         }else{
                             customer.setSavingsAccount((SavingsAccount) accounts.get(j));

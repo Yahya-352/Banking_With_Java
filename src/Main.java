@@ -11,7 +11,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         bank = new Bank();
         welcomePage(bank);
-
     }
     static Scanner sc = new Scanner(System.in);
 
@@ -168,6 +167,48 @@ public class Main {
     private static void Transfer(){
         System.out.println("1. Checking Account");
         System.out.println("2. Savings Account");
+        System.out.println("3. Back");
+        boolean running = true;
+        while (running){
+            System.out.println("please enter a number to choose the account you want to transfer from:");
+            int accType = sc.nextInt();
+            if(accType == 1){
+                System.out.println("enter the account you want to transfer to:");
+                String AccNumber = sc.next();
+                System.out.println("enter the amount you want to transfer:");
+                double amount = sc.nextDouble();
+                if(customer.getCheckingAccount() != null){
+                    try{
+                        bank.transfer(customer.getCheckingAccount(), AccNumber , amount);
+                    }catch (Exception e){
+                        System.out.println("transfer failed: " + e.getMessage());
+                    }
+                }else{
+                    System.out.println("you dont have a checking account");
+                }
+                running = false;
+            }else if(accType ==2){
+                System.out.println("enter the account you want to transfer to:");
+                String AccNumber = sc.next();
+                System.out.println("enter the amount you want to transfer:");
+                double amount = sc.nextDouble();
+                if(customer.getSavingsAccount() != null){
+                    try{
+                        bank.transfer(customer.getSavingsAccount(), AccNumber , amount);
+                    }catch (Exception e){
+                        System.out.println("transfer failed: " + e.getMessage());
+                    }
+                }else{
+                    System.out.println("you dont have a saving account");
+                }
+                running = false;
+            }else if (accType == 3){
+                running = false;
+            }else{
+                System.out.println("please enter a valid option:");
+            }
+        }
+        customerMenuPage();
     }
     private static void transactionHistory(){
         System.out.println("1. Checking Account");
