@@ -9,10 +9,20 @@ public abstract class User {
     private String password;
     protected int failedAttempts = 0;
     protected LocalDateTime lockedUntil;
+    private String userId;
 
     public User(String username , String password){
         this.username = username;
         this.password = password;
+        userId = "USER" + System.currentTimeMillis();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public boolean isLocked(){

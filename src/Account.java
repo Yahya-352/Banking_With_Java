@@ -68,6 +68,22 @@ public abstract class Account implements Transactable{
         return customerId;
     }
 
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public void setOverDraftCount(int overDraftCount) {
+        this.overDraftCount = overDraftCount;
+    }
+
     public void setActive(boolean active) {
         isActive = active;
     }

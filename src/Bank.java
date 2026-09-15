@@ -15,6 +15,7 @@ public class Bank {
         fileHandler = new FileHandler();
         accounts = fileHandler.accountsListLoading();
         users = fileHandler.userListLoading();
+        reconnectAccountsAfterReload();
     }
 
     public User login(String username , String password){
@@ -54,11 +55,13 @@ public class Bank {
         Customer newCustomer = new Customer(username,password);
         if(wantsChecking){
             CheckingAccount checkingAccount = new CheckingAccount(Account.generateAccountNumber() , 0);
+            checkingAccount.setCustomerId(newCustomer.getUserId());
             newCustomer.setCheckingAccount(checkingAccount);
             accounts.add(checkingAccount);
         }
         if(wantsSaving){
-            SavingsAccount savingsAccount = new SavingsAccount("" , 0);
+            SavingsAccount savingsAccount = new SavingsAccount(Account.generateAccountNumber() , 0);
+            savingsAccount.setCustomerId(newCustomer.getUserId());
             newCustomer.setSavingsAccount(savingsAccount);
             accounts.add(savingsAccount);
         }
@@ -102,5 +105,23 @@ public class Bank {
         List<Transaction> transactions = fileHandler.transactionsListLoading();
         return transactions.stream().filter(a -> a.getAccountNumber()
                 .equals(account.getAccountNumber())).toList();
+    }
+
+    private void reconnectAccountsAfterReload(){
+        for(int i = 0 ; i < users.size() ; i++){
+            User user = users.get(i);
+            if(user.getRole().equals("CUSTOMER")){
+                Customer customer = (Customer) user;
+                for(int j = 0; j < accounts.size() ; j++){
+                    if(customer.getUserId().equals(accounts.get(i).getCustomerId())){
+                        if(accounts.get(i).getAccountType().equals("CHECKING_ACCOUNT")){
+                            customer.setCheckingAccount((CheckingAccount) accounts.get(j));
+                        }else{
+                            customer.setSavingsAccount((SavingsAccount) accounts.get(j));
+                        }
+                    }
+                }
+            }
+        }
     }
 }

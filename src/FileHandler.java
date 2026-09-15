@@ -39,6 +39,7 @@ public class FileHandler {
                 String username = parts[0];
                 String password = parts[1];
                 String role = parts[2];
+                String userId = parts[3];
 
                 User user;
                 if (role.equals("BANKER")) {
@@ -46,6 +47,7 @@ public class FileHandler {
                 } else {
                     user = new Customer(username, password);
                 }
+                user.setUserId(userId);
                 users.add(user);
             }
         } catch (FileNotFoundException e) {
@@ -61,18 +63,9 @@ public class FileHandler {
                 String username = users.get(i).getUsername();
                 String pass = users.get(i).getPassword();
                 String role = users.get(i).getRole();
+                String userId = users.get(i).getUserId();
 
-                String checkingAcc = "";
-                String savingsAcc = "";
-                User user = users.get(i);
-                if(role.equals("CUSTOMER")){
-                    Customer customer = (Customer) user;
-                    checkingAcc = customer.getCheckingAccount().getAccountNumber();
-                    savingsAcc = customer.getSavingsAccount().getAccountNumber();
-                }
-
-                myWriter.write(username + "|" + pass + "|" + role + "|" + checkingAcc
-                        + "|"+ savingsAcc +"\n");
+                myWriter.write(username + "|" + pass + "|" + role + "|" + userId + "\n");
             }
             myWriter.close();
         } catch (IOException e) {
@@ -94,6 +87,8 @@ public class FileHandler {
                 int overDraftCount = Integer.parseInt(parts[2]);
                 boolean isActive = Boolean.parseBoolean(parts[3]);
                 String accountType = parts[4];
+                String customerId = parts[5];
+
                 Account account;
 
                 if (accountType.equals("CHECKING_ACCOUNT")) {
@@ -101,6 +96,10 @@ public class FileHandler {
                 } else {
                     account = new SavingsAccount(accountNumber, balance);
                 }
+                account.setCustomerId(customerId);
+                account.setActive(isActive);
+                account.setOverDraftCount(overDraftCount);
+
                 accounts.add(account);
             }
         } catch (FileNotFoundException e) {
@@ -120,8 +119,10 @@ public class FileHandler {
                 int overDraftCount = accounts.get(i).getOverDraftCount();
                 boolean isActive = accounts.get(i).isActive();
                 String accountType = accounts.get(i).getAccountType();
+                String customerId = accounts.get(i).getCustomerId();
                 myWriter.write(accountNumber + "|" + balance + "|"
-                        + overDraftCount + "|" + isActive + "|" + accountType +"\n");
+                        + overDraftCount + "|" + isActive + "|" + accountType
+                        + "|" + customerId +"\n");
             }
             myWriter.close();
         }catch (IOException e) {
