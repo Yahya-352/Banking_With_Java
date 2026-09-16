@@ -88,6 +88,7 @@ public class FileHandler {
                 boolean isActive = Boolean.parseBoolean(parts[3]);
                 String accountType = parts[4];
                 String customerId = parts[5];
+                String cardType = parts[6];
 
                 Account account;
 
@@ -99,7 +100,7 @@ public class FileHandler {
                 account.setCustomerId(customerId);
                 account.setActive(isActive);
                 account.setOverDraftCount(overDraftCount);
-
+                account.setCard(Bank.createCard(cardType));
                 accounts.add(account);
             }
         } catch (FileNotFoundException e) {
@@ -120,9 +121,10 @@ public class FileHandler {
                 boolean isActive = accounts.get(i).isActive();
                 String accountType = accounts.get(i).getAccountType();
                 String customerId = accounts.get(i).getCustomerId();
+                String cardType = accounts.get(i).getCard().getCardType();
                 myWriter.write(accountNumber + "|" + balance + "|"
                         + overDraftCount + "|" + isActive + "|" + accountType
-                        + "|" + customerId +"\n");
+                        + "|" + customerId + "|" + cardType +"\n");
             }
             myWriter.close();
         }catch (IOException e) {

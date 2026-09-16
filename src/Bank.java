@@ -41,7 +41,8 @@ public class Bank {
         return user;
     }
 
-    public Customer addCustomer(String username , String password , boolean wantsChecking , boolean wantsSaving){
+    public Customer addCustomer(String username , String password , boolean wantsChecking
+            , boolean wantsSaving , String checkingCardType , String savingsCardType){
 
         boolean alreadyExists = users.stream()
                 .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
@@ -57,12 +58,14 @@ public class Bank {
         if(wantsChecking){
             CheckingAccount checkingAccount = new CheckingAccount(Account.generateAccountNumber() , 0);
             checkingAccount.setCustomerId(newCustomer.getUserId());
+            checkingAccount.setCard(createCard(checkingCardType));
             newCustomer.setCheckingAccount(checkingAccount);
             accounts.add(checkingAccount);
         }
         if(wantsSaving){
             SavingsAccount savingsAccount = new SavingsAccount(Account.generateAccountNumber() , 0);
             savingsAccount.setCustomerId(newCustomer.getUserId());
+            savingsAccount.setCard(createCard(savingsCardType));
             newCustomer.setSavingsAccount(savingsAccount);
             accounts.add(savingsAccount);
         }
@@ -71,6 +74,16 @@ public class Bank {
         fileHandler.saveAccounts(accounts);
         fileHandler.saveUsers(users);
         return newCustomer;
+    }
+
+    public static ICard createCard(String cardType){
+        if(cardType.equals("PLATINUM")){
+            return new MastercardPlatinum();
+        }else if(cardType.equals("TITANIUM")){
+            return new MastercardTitanium();
+        }else{
+            return new Mastercard();
+        }
     }
 
     public void withdraw(Account account, double amount) {

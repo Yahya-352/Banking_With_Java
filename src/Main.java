@@ -10,6 +10,8 @@ public class Main {
     static Bank bank;
     public static void main(String[] args) throws IOException {
         bank = new Bank();
+        // enter this in DB for accounts to let the program work for you
+        // Banker admin = new Banker("admin", "admin123"); so that you can add a customer from there and login
         welcomePage(bank);
     }
     static Scanner sc = new Scanner(System.in);
@@ -18,6 +20,7 @@ public class Main {
         System.out.println("Welcome to ACME Bank!");
         System.out.println("1. Customer");
         System.out.println("2. Banker");
+        System.out.println("3. Exit");
         boolean running = true;
         while (running){
             System.out.println("please enter a number to select your role:");
@@ -26,7 +29,9 @@ public class Main {
                 customerLoginPage(bank);
                 running = false;
             }else if(role ==2){
-                bankerPage();
+                bankerLoginPage(bank);
+                running = false;
+            }else if(role == 3){
                 running = false;
             }else{
                 System.out.println("please enter 1 for Customer or 2 for Banker");
@@ -43,6 +48,22 @@ public class Main {
         try{
             customer = (Customer) bank.login(username , password);
             customerMenuPage();
+        }
+        catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            welcomePage(bank);
+        }
+    }
+
+    static Banker banker;
+    private static void bankerLoginPage(Bank bank){
+        System.out.println("Enter your username");
+        String username = sc.next();
+        System.out.println("enter your password");
+        String password = sc.next();
+        try{
+            banker = (Banker) bank.login(username , password);
+            bankerPage();
         }
         catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
@@ -228,8 +249,6 @@ public class Main {
                 }else{
                     System.out.println("you dont have a savings account!");
                 }
-            }else if(acctype == 3) {
-                customerMenuPage();
             }
         customerMenuPage();
     }
@@ -342,6 +361,66 @@ public class Main {
 
 
     private static void bankerPage(){
+        System.out.println("1. Add Customer");
+        System.out.println("2. Logout");
+        int choice = sc.nextInt();
 
+        if(choice == 1){
+            System.out.println("Enter new customer's username:");
+            String username = sc.next();
+            System.out.println("Enter new customer's password:");
+            String password = sc.next();
+
+            System.out.println("Does this customer want a checking account?");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            boolean wantsChecking = false;
+            int wantsCheckingChoice = sc.nextInt();
+            String checkingCardType = "";
+            if(wantsCheckingChoice == 1){
+                wantsChecking = true;
+                checkingCardType = askForCardType();
+            }
+
+            System.out.println("Does this customer want a Savings account?");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            boolean wantsSaving = false;
+            int wantsSavingsChoice = sc.nextInt();
+            String savingsCardType = "";
+            if(wantsSavingsChoice == 1){
+                wantsSaving = true;
+                savingsCardType = askForCardType();
+            }
+
+            try{
+                Customer newCustomer = bank.addCustomer(username, password, wantsChecking, wantsSaving,
+                        checkingCardType, savingsCardType);
+                System.out.println("Customer created: " + newCustomer.getUsername());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Customer Creation Failed : "+ e.getMessage());
+            }
+            bankerPage();
+        }else if(choice == 2){
+            welcomePage(bank);
+        }else{
+            System.out.println("Enter a valid option");
+        }
+    }
+
+    private static String askForCardType(){
+        System.out.println("1. Platinum");
+        System.out.println("2. Titanium");
+        System.out.println("3. Standard Mastercard");
+        System.out.println("Choose a card type:");
+        int choice = sc.nextInt();
+
+        if (choice == 1){
+            return "PLATINUM";
+        }else if(choice == 2){
+            return "TITANIUM";
+        }else{
+            return "STANDARD";
+        }
     }
 }

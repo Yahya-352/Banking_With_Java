@@ -5,12 +5,20 @@ public abstract class Account implements Transactable{
     private int overDraftCount = 0;
 
     private String customerId;
-
+    private ICard card;
 
     public Account(String accountNumber , double balance){
         this.accountNumber = accountNumber;
         this.balance = balance;
         isActive = true;
+    }
+
+    public ICard getCard() {
+        return card;
+    }
+
+    public void setCard(ICard card) {
+        this.card = card;
     }
 
     public void withDraw(double amount){
@@ -104,7 +112,8 @@ public abstract class Account implements Transactable{
 
     @Override
     public String toString() {
-        return accountNumber + " | " + getAccountType() + " | Balance: $" + balance + " | Active: " + isActive;
+        return accountNumber + " | " + getAccountType() + " | Balance: $" + balance +
+                " | Active: " + isActive + " | Card Info : " + getCard().getCardType();
     }
 
 }
