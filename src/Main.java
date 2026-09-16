@@ -78,6 +78,7 @@ public class Main {
         System.out.println("4. Transaction History");
         System.out.println("5. Account Statement");
         System.out.println("6. My accounts");
+        System.out.println("7. Logout");
 
         int choice = sc.nextInt();
         if(choice == 1){
@@ -90,9 +91,12 @@ public class Main {
             transactionHistory();
         }else if(choice == 5){
             accountStatement();
-        }
-        if(choice == 6){
+        }else if(choice == 6){
             viewAccounts(customer);
+        }else if(choice == 7 ){
+            customer = null;
+            System.out.println("Logged out succesfuly");
+            welcomePage(bank);
         }
     }
     private static void deposit(Bank bank){
@@ -402,6 +406,7 @@ public class Main {
             }
             bankerPage();
         }else if(choice == 2){
+            banker = null;
             welcomePage(bank);
         }else{
             System.out.println("Enter a valid option");

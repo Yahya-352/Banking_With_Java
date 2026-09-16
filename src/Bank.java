@@ -87,6 +87,14 @@ public class Bank {
     }
 
     public void withdraw(Account account, double amount) {
+        List<Transaction> todayTransactions = getTransactionsForToday(getTransactionHistory(account));
+        double withdrawnToday = todayTransactions.stream().filter
+                (a -> a.getType().equals("WITHDRAW")).mapToDouble(Transaction::getAmount).sum();
+
+        if(withdrawnToday + amount > account.getCard().getWithdrawLimit()){
+            throw new IllegalArgumentException("This would exceed your daily withdrawal limit of $"
+                    + account.getCard().getWithdrawLimit());
+        }
         account.withDraw(amount);
 
         Transaction transaction = new Transaction(
@@ -101,6 +109,16 @@ public class Bank {
     }
 
     public void deposit(Account account, double amount) {
+
+        List<Transaction> todayTransactions = getTransactionsForToday(getTransactionHistory(account));
+        double depositedToday = todayTransactions.stream().filter
+                (a -> a.getType().equals("DEPOSIT")).mapToDouble(Transaction::getAmount).sum();
+
+        if(depositedToday + amount > account.getCard().getDepositLimit()){
+            throw new IllegalArgumentException("This would exceed your daily deposit limit of $"
+                    + account.getCard().getDepositLimit());
+        }
+
         account.deposit(amount);
 
         Transaction transaction = new Transaction(
@@ -115,31 +133,63 @@ public class Bank {
         fileHandler.saveAccounts(accounts);
     }
 
-    public void transfer(Account fromAcc , String toAccNumber, double amount){
+    public void transfer(Account fromAcc, String toAccNumber, double amount) {
         Account toAccount = null;
+
         if (fromAcc.getAccountNumber().equals(toAccNumber)) {
             throw new IllegalArgumentException("Cannot transfer to the same account");
         }
-        for(int i = 0 ; i< accounts.size() ; i++){
-            if(accounts.get(i).getAccountNumber().equals(toAccNumber)){
+
+        for (int i = 0; i < accounts.size(); i++) {
+            if (accounts.get(i).getAccountNumber().equals(toAccNumber)) {
                 toAccount = accounts.get(i);
             }
         }
-        if(toAccount != null){
-            fromAcc.withDraw(amount);
-            toAccount.deposit(amount);
-            Transaction outTransaction = new Transaction(
-                    fromAcc.getAccountNumber(), "TRANSFER_OUT", amount, fromAcc.getBalance(), LocalDateTime.now());
-            Transaction inTransaction = new Transaction(
-                    toAccount.getAccountNumber(), "TRANSFER_IN", amount, toAccount.getBalance(), LocalDateTime.now());
 
-            fileHandler.appendingTransactions(outTransaction);
-            fileHandler.appendingTransactions(inTransaction);
-            fileHandler.saveAccounts(accounts);
-        }else{
+        if (toAccount == null) {
             throw new IllegalArgumentException("No account found with that number: " + toAccNumber);
         }
 
+        String transferType = "TRANSFER_OUT";
+        if (toAccount.getCustomerId().equals(fromAcc.getCustomerId())) {
+            transferType = "TRANSFER_OUT_INTERNAL";
+        }
+
+        List<Transaction> todayTransactions = getTransactionsForToday(getTransactionHistory(fromAcc));
+
+        if (toAccount.getCustomerId().equals(fromAcc.getCustomerId())) {
+            double transferedToday = todayTransactions.stream()
+                    .filter(a -> a.getType().equals("TRANSFER_OUT_INTERNAL"))
+                    .mapToDouble(Transaction::getAmount)
+                    .sum();
+
+            if (transferedToday + amount > fromAcc.getCard().getOwnTransferLimit()) {
+                throw new IllegalArgumentException("This would exceed your daily transfer limit(Internal) of $"
+                        + fromAcc.getCard().getOwnTransferLimit());
+            }
+        } else {
+            double transferedToday = todayTransactions.stream()
+                    .filter(a -> a.getType().equals("TRANSFER_OUT"))
+                    .mapToDouble(Transaction::getAmount)
+                    .sum();
+
+            if (transferedToday + amount > fromAcc.getCard().getTransferLimit()) {
+                throw new IllegalArgumentException("This would exceed your daily transfer limit(General) of $"
+                        + fromAcc.getCard().getTransferLimit());
+            }
+        }
+
+        fromAcc.withDraw(amount);
+        toAccount.deposit(amount);
+
+        Transaction outTransaction = new Transaction(
+                fromAcc.getAccountNumber(), transferType, amount, fromAcc.getBalance(), LocalDateTime.now());
+        Transaction inTransaction = new Transaction(
+                toAccount.getAccountNumber(), "TRANSFER_IN", amount, toAccount.getBalance(), LocalDateTime.now());
+
+        fileHandler.appendingTransactions(outTransaction);
+        fileHandler.appendingTransactions(inTransaction);
+        fileHandler.saveAccounts(accounts);
     }
 
     private void reconnectAccountsAfterReload(){

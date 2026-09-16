@@ -7,6 +7,8 @@ public abstract class Account implements Transactable{
     private String customerId;
     private ICard card;
 
+
+
     public Account(String accountNumber , double balance){
         this.accountNumber = accountNumber;
         this.balance = balance;
