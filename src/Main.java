@@ -37,8 +37,8 @@ public class Main {
                 System.out.println("please enter 1 for Customer or 2 for Banker");
             }
         }
-
     }
+
     static Customer customer;
     private static void customerLoginPage(Bank bank){
         System.out.println("Enter your username");
