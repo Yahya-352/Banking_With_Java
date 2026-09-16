@@ -48,6 +48,7 @@ public class FileHandler {
                     user = new Customer(username, password);
                 }
                 user.setUserId(userId);
+                user.setPassword(password);
                 users.add(user);
             }
         } catch (FileNotFoundException e) {

@@ -1,10 +1,7 @@
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     static Bank bank;
@@ -24,17 +21,22 @@ public class Main {
         boolean running = true;
         while (running){
             System.out.println("please enter a number to select your role:");
-            int role = sc.nextInt();
-            if(role == 1){
-                customerLoginPage(bank);
-                running = false;
-            }else if(role ==2){
-                bankerLoginPage(bank);
-                running = false;
-            }else if(role == 3){
-                running = false;
-            }else{
-                System.out.println("please enter 1 for Customer or 2 for Banker");
+            try{
+                int role = sc.nextInt();
+                if(role == 1){
+                    customerLoginPage(bank);
+                    running = false;
+                }else if(role ==2){
+                    bankerLoginPage(bank);
+                    running = false;
+                }else if(role == 3){
+                    running = false;
+                }else{
+                    System.out.println("please enter 1 for Customer or 2 for Banker");
+                }
+            }catch (InputMismatchException e){
+                System.out.println("Please enter a valid number");
+                sc.next();
             }
         }
     }
@@ -79,25 +81,31 @@ public class Main {
         System.out.println("5. Account Statement");
         System.out.println("6. My accounts");
         System.out.println("7. Logout");
-
-        int choice = sc.nextInt();
-        if(choice == 1){
-            deposit(bank);
-        }else if(choice == 2){
-            WithDraw();
-        }else if(choice == 3){
-            Transfer();
-        }else if(choice == 4){
-            transactionHistory();
-        }else if(choice == 5){
-            accountStatement();
-        }else if(choice == 6){
-            viewAccounts(customer);
-        }else if(choice == 7 ){
-            customer = null;
-            System.out.println("Logged out succesfuly");
-            welcomePage(bank);
+        try {
+            int choice = sc.nextInt();
+            if(choice == 1){
+                deposit(bank);
+            }else if(choice == 2){
+                WithDraw();
+            }else if(choice == 3){
+                Transfer();
+            }else if(choice == 4){
+                transactionHistory();
+            }else if(choice == 5){
+                accountStatement();
+            }else if(choice == 6){
+                viewAccounts(customer);
+            }else if(choice == 7 ){
+                customer = null;
+                System.out.println("Logged out succesfuly");
+                welcomePage(bank);
+            }
+        }catch (InputMismatchException e){
+            System.out.println("Please enter a valid number");
+            sc.next();
+            customerMenuPage();
         }
+
     }
     private static void deposit(Bank bank){
         System.out.println("1. Checking Account");
@@ -106,40 +114,46 @@ public class Main {
         boolean running = true;
         while (running){
             System.out.println("please enter a number to choose the account you want to deposit to:");
-            int accType = sc.nextInt();
-            if(accType == 1){
-                System.out.println("enter the amount you want to deposit");
-                double amount = sc.nextDouble();
-                if(customer.getCheckingAccount() != null){
-                    try{
-                        bank.deposit(customer.getCheckingAccount() , amount);
-                        System.out.println("Deposit successful");
-                    }catch (Exception e){
-                        System.out.println("Deposit failed: " + e.getMessage());
+            try{
+                int accType = sc.nextInt();
+                if(accType == 1){
+                    System.out.println("enter the amount you want to deposit");
+                    double amount = sc.nextDouble();
+                    if(customer.getCheckingAccount() != null){
+                        try{
+                            bank.deposit(customer.getCheckingAccount() , amount);
+                            System.out.println("Deposit successful");
+                        }catch (Exception e){
+                            System.out.println("Deposit failed: " + e.getMessage());
+                        }
+                    }else{
+                        System.out.println("you dont have a checking account");
                     }
-                }else{
-                    System.out.println("you dont have a checking account");
-                }
-                running = false;
-            }else if(accType ==2){
-                System.out.println("enter the amount you want to deposit");
-                double amount = sc.nextDouble();
-                if(customer.getSavingsAccount() != null){
-                    try{
-                        bank.deposit(customer.getSavingsAccount() , amount);
-                        System.out.println("Deposit Successful");
-                    }catch (Exception e){
-                        System.out.println("Deposit failed: " + e.getMessage());
+                    running = false;
+                }else if(accType ==2){
+                    System.out.println("enter the amount you want to deposit");
+                    double amount = sc.nextDouble();
+                    if(customer.getSavingsAccount() != null){
+                        try{
+                            bank.deposit(customer.getSavingsAccount() , amount);
+                            System.out.println("Deposit Successful");
+                        }catch (Exception e){
+                            System.out.println("Deposit failed: " + e.getMessage());
+                        }
+                    }else{
+                        System.out.println("you dont have a saving account");
                     }
+                    running = false;
+                }else if (accType == 3){
+                    running = false;
                 }else{
-                    System.out.println("you dont have a saving account");
+                    System.out.println("please enter a valid option:");
                 }
-                running = false;
-            }else if (accType == 3){
-                running = false;
-            }else{
-                System.out.println("please enter a valid option:");
+            }catch (InputMismatchException e){
+                System.out.println("please enter valid number");
+                sc.next();
             }
+
         }
         customerMenuPage();
     }
@@ -152,39 +166,44 @@ public class Main {
         boolean running = true;
         while (running){
             System.out.println("please enter a number to choose the account you want to Withdraw from:");
-            int accType = sc.nextInt();
-            if(accType == 1){
-                System.out.println("enter the amount you want to Withdraw");
-                double amount = sc.nextDouble();
-                if(customer.getCheckingAccount() != null){
-                    try{
-                        bank.withdraw(customer.getCheckingAccount() , amount);
-                        System.out.println("Withdraw successful");
-                    }catch (Exception e){
-                        System.out.println("Withdraw failed: " + e.getMessage());
+            try{
+                int accType = sc.nextInt();
+                if(accType == 1){
+                    System.out.println("enter the amount you want to Withdraw");
+                    double amount = sc.nextDouble();
+                    if(customer.getCheckingAccount() != null){
+                        try{
+                            bank.withdraw(customer.getCheckingAccount() , amount);
+                            System.out.println("Withdraw successful");
+                        }catch (Exception e){
+                            System.out.println("Withdraw failed: " + e.getMessage());
+                        }
+                    }else{
+                        System.out.println("you dont have a checking account");
                     }
-                }else{
-                    System.out.println("you dont have a checking account");
-                }
-                running = false;
-            }else if(accType ==2){
-                System.out.println("enter the amount you want to Withdraw");
-                double amount = sc.nextDouble();
-                if(customer.getSavingsAccount() != null){
-                    try{
-                        bank.withdraw(customer.getSavingsAccount() , amount);
-                        System.out.println("Withdraw Successful");
-                    }catch (Exception e){
-                        System.out.println("Withdraw failed: " + e.getMessage());
+                    running = false;
+                }else if(accType ==2){
+                    System.out.println("enter the amount you want to Withdraw");
+                    double amount = sc.nextDouble();
+                    if(customer.getSavingsAccount() != null){
+                        try{
+                            bank.withdraw(customer.getSavingsAccount() , amount);
+                            System.out.println("Withdraw Successful");
+                        }catch (Exception e){
+                            System.out.println("Withdraw failed: " + e.getMessage());
+                        }
+                    }else{
+                        System.out.println("you dont have a saving account");
                     }
+                    running = false;
+                }else if (accType == 3){
+                    running = false;
                 }else{
-                    System.out.println("you dont have a saving account");
+                    System.out.println("please enter a valid option:");
                 }
-                running = false;
-            }else if (accType == 3){
-                running = false;
-            }else{
-                System.out.println("please enter a valid option:");
+            }catch (InputMismatchException e){
+                System.out.println("Please Enter a valid number");
+                sc.next();
             }
         }
         customerMenuPage();
@@ -196,42 +215,48 @@ public class Main {
         boolean running = true;
         while (running){
             System.out.println("please enter a number to choose the account you want to transfer from:");
-            int accType = sc.nextInt();
-            if(accType == 1){
-                System.out.println("enter the account you want to transfer to:");
-                String AccNumber = sc.next();
-                System.out.println("enter the amount you want to transfer:");
-                double amount = sc.nextDouble();
-                if(customer.getCheckingAccount() != null){
-                    try{
-                        bank.transfer(customer.getCheckingAccount(), AccNumber , amount);
-                    }catch (Exception e){
-                        System.out.println("transfer failed: " + e.getMessage());
+            try{
+                int accType = sc.nextInt();
+                if(accType == 1){
+                    System.out.println("enter the account you want to transfer to:");
+                    String AccNumber = sc.next();
+                    System.out.println("enter the amount you want to transfer:");
+                    double amount = sc.nextDouble();
+                    if(customer.getCheckingAccount() != null){
+                        try{
+                            bank.transfer(customer.getCheckingAccount(), AccNumber , amount);
+                        }catch (Exception e){
+                            System.out.println("transfer failed: " + e.getMessage());
+                        }
+                    }else{
+                        System.out.println("you dont have a checking account");
                     }
-                }else{
-                    System.out.println("you dont have a checking account");
-                }
-                running = false;
-            }else if(accType ==2){
-                System.out.println("enter the account you want to transfer to:");
-                String AccNumber = sc.next();
-                System.out.println("enter the amount you want to transfer:");
-                double amount = sc.nextDouble();
-                if(customer.getSavingsAccount() != null){
-                    try{
-                        bank.transfer(customer.getSavingsAccount(), AccNumber , amount);
-                    }catch (Exception e){
-                        System.out.println("transfer failed: " + e.getMessage());
+                    running = false;
+                }else if(accType ==2){
+                    System.out.println("enter the account you want to transfer to:");
+                    String AccNumber = sc.next();
+                    System.out.println("enter the amount you want to transfer:");
+                    double amount = sc.nextDouble();
+                    if(customer.getSavingsAccount() != null){
+                        try{
+                            bank.transfer(customer.getSavingsAccount(), AccNumber , amount);
+                        }catch (Exception e){
+                            System.out.println("transfer failed: " + e.getMessage());
+                        }
+                    }else{
+                        System.out.println("you dont have a saving account");
                     }
+                    running = false;
+                }else if (accType == 3){
+                    running = false;
                 }else{
-                    System.out.println("you dont have a saving account");
+                    System.out.println("please enter a valid option:");
                 }
-                running = false;
-            }else if (accType == 3){
-                running = false;
-            }else{
-                System.out.println("please enter a valid option:");
+            }catch (InputMismatchException e){
+                System.out.println("Enter a valid number");
+                sc.next();
             }
+
         }
         customerMenuPage();
     }
@@ -308,43 +333,49 @@ public class Main {
         boolean running = true;
         while (running){
             System.out.println("please enter a number to choose the account you want to View:");
-            int accType = sc.nextInt();
-            if(accType == 1){
-                Account acc = null;
-                if(customer.getCheckingAccount() != null){
-                    System.out.println("-------------ACCOUNT STATEMENT-----------");
-                    acc = customer.getCheckingAccount();
-                    List<Transaction> transactions = bank.getTransactionHistory(acc);
-                    System.out.println(acc);
-                    System.out.println("-------------ACCOUNT TRANSACTIONS-----------");
-                    for(Transaction transaction : transactions){
-                        System.out.println(transaction);
-                    }
+            try{
+                int accType = sc.nextInt();
+                if(accType == 1){
+                    Account acc = null;
+                    if(customer.getCheckingAccount() != null){
+                        System.out.println("-------------ACCOUNT STATEMENT-----------");
+                        acc = customer.getCheckingAccount();
+                        List<Transaction> transactions = bank.getTransactionHistory(acc);
+                        System.out.println(acc);
+                        System.out.println("-------------ACCOUNT TRANSACTIONS-----------");
+                        for(Transaction transaction : transactions){
+                            System.out.println(transaction);
+                        }
 
-                }else{
-                    System.out.println("you dont have a checking account");
-                }
-                running = false;
-            }else if(accType ==2){
-                Account acc = null;
-                if(customer.getSavingsAccount() != null){
-                    System.out.println("-------------ACCOUNT STATEMENT-----------");
-                    acc = customer.getSavingsAccount();
-                    List<Transaction> transactions = bank.getTransactionHistory(acc);
-                    System.out.println(acc);
-                    System.out.println("-------------ACCOUNT TRANSACTIONS-----------");
-                    for(Transaction transaction : transactions){
-                        System.out.println(transaction);
+                    }else{
+                        System.out.println("you dont have a checking account");
                     }
+                    running = false;
+                }else if(accType ==2){
+                    Account acc = null;
+                    if(customer.getSavingsAccount() != null){
+                        System.out.println("-------------ACCOUNT STATEMENT-----------");
+                        acc = customer.getSavingsAccount();
+                        List<Transaction> transactions = bank.getTransactionHistory(acc);
+                        System.out.println(acc);
+                        System.out.println("-------------ACCOUNT TRANSACTIONS-----------");
+                        for(Transaction transaction : transactions){
+                            System.out.println(transaction);
+                        }
+                    }else{
+                        System.out.println("you dont have a saving account");
+                    }
+                    running = false;
+                }else if (accType == 3){
+                    running = false;
                 }else{
-                    System.out.println("you dont have a saving account");
+                    System.out.println("please enter a valid option:");
                 }
-                running = false;
-            }else if (accType == 3){
-                running = false;
-            }else{
-                System.out.println("please enter a valid option:");
+            }catch (InputMismatchException e){
+                System.out.println("Please enter a valid number");
+                sc.next();
             }
+
         }
         customerMenuPage();
     }
