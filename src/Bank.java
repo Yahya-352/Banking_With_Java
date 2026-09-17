@@ -254,4 +254,16 @@ public class Bank {
         return transactions.stream().filter(t -> t.getTimestamp().toLocalDate().isAfter(startDate)&&
                 t.getTimestamp().toLocalDate().isBefore(endDate)).toList();
     }
+
+    public Banker addBanker(String username, String password) {
+        boolean alreadyExists = users.stream()
+                .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
+        if (alreadyExists) {
+            throw new IllegalArgumentException("username already exists!");
+        }
+        Banker newBanker = new Banker(username, password);
+        users.add(newBanker);
+        fileHandler.saveUsers(users);
+        return newBanker;
+    }
 }

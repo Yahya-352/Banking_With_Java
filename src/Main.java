@@ -7,8 +7,11 @@ public class Main {
     static Bank bank;
     public static void main(String[] args) throws IOException {
         bank = new Bank();
-        // enter this in DB for accounts to let the program work for you
-        // Banker admin = new Banker("admin", "admin123"); so that you can add a customer from there and login
+        try {
+            bank.addBanker("admintest", "admintest123");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
         welcomePage(bank);
     }
     static Scanner sc = new Scanner(System.in);
