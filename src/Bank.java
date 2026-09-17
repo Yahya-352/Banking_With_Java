@@ -19,6 +19,9 @@ public class Bank {
         reconnectAccountsAfterReload();
     }
 
+    //login functionality .. we used optional here as user can be or cannot be there... so there is a chance that
+    //its a null
+    // we increment after each failed logged in attempt
     public User login(String username , String password){
 
         Optional<User> foundUser = users.stream().filter
@@ -41,6 +44,7 @@ public class Bank {
         return user;
     }
 
+    //banker job is to add a customer
     public Customer addCustomer(String username , String password , boolean wantsChecking
             , boolean wantsSaving , String checkingCardType , String savingsCardType){
 

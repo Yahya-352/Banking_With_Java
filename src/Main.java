@@ -105,8 +105,8 @@ public class Main {
             sc.next();
             customerMenuPage();
         }
-
     }
+
     private static void deposit(Bank bank){
         System.out.println("1. Checking Account");
         System.out.println("2. Savings Account");
@@ -393,7 +393,6 @@ public class Main {
         }
         customerMenuPage();
     }
-
 
     private static void bankerPage(){
         System.out.println("1. Add Customer");
